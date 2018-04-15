@@ -31,22 +31,29 @@ def parse_vehicle_urls(results):
         rsp = requests.get(url)
 
         html = bs4(rsp.text, 'html.parser')
-        vehresults = html.body.find_all('p', attrs={'class':'attrgroup'})
 
         try:
-            vyear = vehresults[0].find_all('span')[0].get_text()[0:4]
-            vehicle['Year'] = vyear
+            vehresults = html.body.find_all('p', attrs={'class':'attrgroup'})
+
+            try:
+                vyear = vehresults[0].find_all('span')[0].get_text()[0:4]
+                vehicle['Year'] = vyear
 
 
-            vehicle_info = vehresults[1].find_all('span')
-            for l in range(len(vehicle_info)):
-                attribute, value = vehicle_info[l].get_text().split(':')
-                vehicle[attribute] = value
+                vehicle_info = vehresults[1].find_all('span')
+                for l in range(len(vehicle_info)):
+                    try:
+                        attribute, value = vehicle_info[l].get_text().split(':')
+                    except ValueError:
+                        print('Post %9i has a bad attribute - URL: %s'%(k, url))
+                    vehicle[attribute] = value
 
-            vehicle_list.append(vehicle)
+                vehicle_list.append(vehicle)
 
-        except IndexError:
-            print('Post %9i was likely deleted'% k)
+            except IndexError:
+                print('Post %9i was likely deleted - URL: %s'%(k, url))
+        except AttributeError:
+            print('Post %9i has no attributes - URL: %s'%(k, url))
 
 
     return vehicle_list
