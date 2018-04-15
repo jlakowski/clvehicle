@@ -3,15 +3,12 @@ import csv
 import sys
 import pandas as pd
 import parse_craigslist
+import os
+import utilities
 
 def main(argv):
-    if len(argv) < 4:
-        print('please enter $python clvehicles.py [city] [make] [model]')
-        sys.exit()
 
-    location = argv[1]
-    make = argv[2]
-    model = argv[3]
+    location, make, model = utilities.get_parameters()
 
     fileName = '' + location + '_' + make + '_' + model + ''
     folder = '../FileDump/'
@@ -29,6 +26,9 @@ def main(argv):
     vehicles_df.index.name = 'VehicleKey'
 
 
+
+    if not os.path.exists("../FileDump"):
+        os.makedirs("../FileDump")
     vehicles_df.to_csv(folder + fileName, sep='|')
 
 

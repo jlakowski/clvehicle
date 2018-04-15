@@ -20,12 +20,13 @@ def parse_results(results):
 def parse_vehicle_urls(results):
     print('Parsing the ads')
 
-    url_list = results['url']
-
     vehicle_list = []
 
-    for k, url in enumerate(url_list):
+    for k, url in enumerate(results['url']):
         vehicle = dict()
+
+        for column_name in results.columns:
+            vehicle[column_name] = results[column_name].iloc[k]
 
         rsp = requests.get(url)
 
@@ -35,8 +36,9 @@ def parse_vehicle_urls(results):
         try:
             vyear = vehresults[0].find_all('span')[0].get_text()[0:4]
             vehicle['Year'] = vyear
-            vehicle_info = vehresults[1].find_all('span')
 
+
+            vehicle_info = vehresults[1].find_all('span')
             for l in range(len(vehicle_info)):
                 attribute, value = vehicle_info[l].get_text().split(':')
                 vehicle[attribute] = value
@@ -48,3 +50,11 @@ def parse_vehicle_urls(results):
 
 
     return vehicle_list
+
+#Parse the different sites available from the craigslist US sites page https://www.craigslist.org/about/sites#US
+def craigslist_sites():
+    return 1
+
+
+
+
