@@ -9,6 +9,7 @@ start up your virtual env
 ```
 pip install python-craigslist
 pip install bs4
+pip install pandas
 ```
 
 Usage:
