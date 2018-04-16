@@ -8,3 +8,6 @@ def get_parameters():
 
     return location, make, model
 
+def empty_function():
+    print("hi")
+
