@@ -1,6 +1,11 @@
 from bs4 import BeautifulSoup as bs4
+from urllib.request import urlopen
 import requests
 import pandas as pd
+import re
+import time
+import utilities
+
 
 def parse_results(results):
     parsed_results = []
@@ -12,10 +17,11 @@ def parse_results(results):
         parsed_results.append(item_dict)
 
     print('%9i Results found' %  idx)
-
+    utilities.result_size_wait(idx)
     parsed_results = pd.DataFrame(parsed_results)
 
     return parsed_results
+
 
 def parse_vehicle_urls(results):
     print('Parsing the ads')
@@ -29,7 +35,6 @@ def parse_vehicle_urls(results):
             vehicle[column_name] = results[column_name].iloc[k]
 
         rsp = requests.get(url)
-
         html = bs4(rsp.text, 'html.parser')
 
         try:
@@ -55,12 +60,32 @@ def parse_vehicle_urls(results):
         except AttributeError:
             print('Post %9i has no attributes - URL: %s'%(k, url))
 
+        time.sleep(1)
 
     return vehicle_list
 
-#Parse the different sites available from the craigslist US sites page https://www.craigslist.org/about/sites#US
-def craigslist_sites():
-    return 1
+
+#Parse the different sites available from the craigslist US sites page No site links on: https://geo.craigslist.org/iso/us
+def parse_craigslist_sites():
+    sites = []
+    us_sites_list_url = 'https://geo.craigslist.org/iso/us'
+
+
+    html = urlopen(us_sites_list_url)
+    us_sites_html = bs4(html, 'html.parser')
+
+    try:
+        links = us_sites_html.find("ul", {"class": "height6 geo-site-list"})
+
+        for link in links.findAll("a", href=True):
+            us_site = re.search(r'https:\/\/(.*?).craigslist.org', link['href']).group(1)
+
+            sites.append(us_site)
+
+    except AttributeError:
+        print("No site links on: https://geo.craigslist.org/iso/us")
+
+    return sites
 
 
 
