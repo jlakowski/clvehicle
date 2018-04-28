@@ -34,5 +34,5 @@ def write_df_to_db(vehicles_df, make, model):
     vehicles_df.to_sql(name=table_name, con=connection, if_exists='append', schema='craigslist', index=True)
 
 
-
+ 
 
