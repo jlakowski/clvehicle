@@ -12,6 +12,8 @@ start up your virtual env
 pip install python-craigslist
 pip install bs4
 pip install pandas
+pip install sqlalchemy
+pip install pymysql
 ```
 
 Usage:
@@ -21,3 +23,15 @@ python clvehicles.py [city] [make] [model]
 testing commit from pycharm
 changed again
 ```
+
+ConfigurationFiles:
+'''
+Create a file named MySqlConfigurationString.txt at the same level as clvehicles.py.
+
+The contents of the file should be similar to: mysql+pymysql://root:<<Password>>@localhost/craigslist
+'''
+
+MySQL configuartion:
+'''
+Create the schema craigslist in MySQL by running the file: CreateSchema_craigslists.sql
+'''
