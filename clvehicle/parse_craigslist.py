@@ -5,6 +5,7 @@ import pandas as pd
 import re
 import time
 import utilities
+import random
 
 
 def parse_results(results):
@@ -60,7 +61,7 @@ def parse_vehicle_urls(results):
         except AttributeError:
             print('Post %9i has no attributes - URL: %s'%(k, url))
 
-        time.sleep(1)
+        time.sleep(random.randint(2,5))
 
     return vehicle_list
 
