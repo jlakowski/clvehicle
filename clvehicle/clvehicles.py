@@ -8,12 +8,14 @@ import utilities
 
 def main(argv):
 
+    make, model, single_site, write_to = utilities.get_parameters()
 
-    craigslist_sites = parse_craigslist.parse_craigslist_sites()
+    if not single_site:
+        sites_to_crawl = parse_craigslist.parse_craigslist_sites()
+    else:
+        sites_to_crawl = [single_site]
 
-    make, model = utilities.get_parameters()
-
-    for location in craigslist_sites:
+    for location in sites_to_crawl:
         file_name = '' + location + '_' + make + '_' + model + ''
         folder = '../FileDump/'
 
@@ -27,9 +29,13 @@ def main(argv):
         vehicles_df = pd.DataFrame(list_of_dics)
         vehicles_df.index.name = 'VehicleKey'
 
-        if not os.path.exists("../FileDump"):
-            os.makedirs("../FileDump")
-        vehicles_df.to_csv(folder + file_name, sep='|')
+
+        if write_to == 'csv':
+            if not os.path.exists("../FileDump"):
+                os.makedirs("../FileDump")
+            vehicles_df.to_csv(folder + file_name, sep='|')
+        elif write_to == 'db':
+            utilities.write_df_to_db(vehicles_df, make, model)
 
 
 
