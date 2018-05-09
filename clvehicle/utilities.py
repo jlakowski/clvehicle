@@ -24,15 +24,18 @@ def write_df_to_db(vehicles_df, make, model):
     with open('MySQLConnectionString.txt', 'r') as file:
         connection_string = file.readline()
 
-    engine = create_engine(connection_string)
+    engine = create_engine(connection_string, encoding='utf-8')
     connection = engine.connect()
     table_name = make + '_' + model
 
     vehicles_df['id'] = vehicles_df['id'].astype(int)
     vehicles_df = vehicles_df.set_index('id')
 
-    vehicles_df.to_sql(name=table_name, con=connection, if_exists='append', schema='craigslist', index=True)
-
-
- 
-
+    try:
+        vehicles_df.to_sql(name=table_name, con=connection, if_exists='append', schema='craigslist', index=True, chunksize = 10)
+    except TypeError:
+        print("TypeError occured")
+    except ValueError:
+        print("ValueError occured")
+    except:
+        print("Some other error occured when wrting to the db!")
