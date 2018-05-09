@@ -28,11 +28,11 @@ def write_df_to_db(vehicles_df, make, model):
     connection = engine.connect()
     table_name = make + '_' + model
 
-    vehicles_df['id'] = vehicles_df['id'].astype(int)
-    vehicles_df = vehicles_df.set_index('id')
+    #vehicles_df['id'] = vehicles_df['id'].astype(int)
+    #vehicles_df = vehicles_df.set_index('id')
 
     try:
-        vehicles_df.to_sql(name=table_name, con=connection, if_exists='append', schema='craigslist', index=True, chunksize = 10)
+        vehicles_df.to_sql(name=table_name, con=connection, if_exists='append', schema='craigslist', index=False, chunksize = 10)
     except TypeError:
         print("TypeError occured")
     except ValueError:
