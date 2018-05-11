@@ -5,6 +5,7 @@ import pandas as pd
 import re
 import time
 import utilities
+import random
 
 
 def parse_results(results):
@@ -23,13 +24,17 @@ def parse_results(results):
     return parsed_results
 
 
-def parse_vehicle_urls(results):
+def parse_vehicle_urls(results, location, make, model, write_to):
     print('Parsing the ads')
 
     vehicle_list = []
 
     for k, url in enumerate(results['url']):
         vehicle = dict()
+
+        vehicle['make'] = make
+        vehicle['model'] = model
+        vehicle['location'] = location
 
         for column_name in results.columns:
             vehicle[column_name] = results[column_name].iloc[k]
@@ -57,10 +62,22 @@ def parse_vehicle_urls(results):
 
             except IndexError:
                 print('Post %9i was likely deleted - URL: %s'%(k, url))
+            except:
+                print("Your ip may be banned. Waiting 6 hours...")
+                time.sleep(21600)
         except AttributeError:
             print('Post %9i has no attributes - URL: %s'%(k, url))
 
-        time.sleep(1)
+        if write_to == 'db':
+            list_of_dicts = vehicle_list
+            vehicles_df = pd.DataFrame(list_of_dicts)
+            vehicles_df.index.name = 'VehicleKey'
+
+            utilities.write_df_to_db(vehicles_df, make, model)
+            vehicle_list = []
+
+
+        time.sleep(random.randint(1,7))
 
     return vehicle_list
 
