@@ -1,6 +1,4 @@
 from craigslist import CraigslistForSale
-import csv
-import sys
 import pandas as pd
 import parse_craigslist
 import os
